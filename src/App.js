@@ -6,6 +6,7 @@ import Form from './components/Form';
 import {
 	BrowserRouter as Router,
 	Outlet,
+	useNavigate,
 	Route,
 	Routes,
 } from 'react-router-dom';
@@ -24,10 +25,14 @@ const App = () => {
 	const [isPopup, setIsPopup] = useState(false);
 	const [listFormData, setListFormData] = useState([]);
 	const [index, setIndex] = useState(0);
+	const history = useNavigate();
 
 	useEffect(() => {
 		const storedUserLoggedInInformation = localStorage.getItem('isLoggedIn');
-		if (storedUserLoggedInInformation === '1') setIsLoggedIn(true);
+		if (storedUserLoggedInInformation === '1') {
+			history('/');
+			setIsLoggedIn(true);
+		}
 	}, []);
 
 	const addComicHandler = async (comic) => {
@@ -54,16 +59,19 @@ const App = () => {
 		setIsPopup(data);
 	};
 
-	const onListData = (list) => {
-		setListFormData(list);
-	}
+	const onListData = (data) => {
+		setListFormData((prevList) => {
+			return [...prevList, data];
+		});
+	};
+	console.log(listFormData);
 	return (
 		<AuthProvider>
 			<Nav setIsLoggedIn={setIsLoggedIn}></Nav>
 			<Container>
 				<div className='row'>
 					<div className='col-5'>
-					<Routes>
+						<Routes>
 							<Route path='/dashboard' element={<Dashboard />}></Route>
 							<Route path='/' element={<Home />}></Route>
 							<Route path='/signup' element={<SignUp />} />
@@ -85,9 +93,15 @@ const App = () => {
 							<Route path='*' element={<NotFound />} />
 						</Routes>
 					</div>
-					<div className='col-3'>{isPopup && <Form index={index} onListData={onListData} addFormHandler={addFormHandler}></Form>}</div>
-					<div className='col-4'>
+					<div className='col-3'>
+						{isPopup && (
+							<Form
+								index={index}
+								onListData={onListData}
+								addFormHandler={addFormHandler}></Form>
+						)}
 					</div>
+					<div className='col-4'></div>
 				</div>
 			</Container>
 		</AuthProvider>

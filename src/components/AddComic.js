@@ -9,7 +9,6 @@ function AddComic(props) {
 	const releaseDateRef = useRef('');
 	const chapterRef = useRef('');
 
-	// props.listFormData.map(data => console.log(data))
 	function submitHandler(event) {
 		event.preventDefault();
 
@@ -20,9 +19,11 @@ function AddComic(props) {
 			owner: ownerRef.current.value,
 			releaseDate: releaseDateRef.current.value,
 			chapter: chapterRef.current.value,
+			listChapterDetails: props.listFormData,
 		};
 
-		props.addComicHandler(comic);
+		//props.addComicHandler(comic);
+		console.log(comic);
 	}
 
 	return (

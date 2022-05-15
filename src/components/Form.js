@@ -2,10 +2,9 @@ import React, { useRef, useState } from 'react';
 import DragAndDrog from './DragAnDrop';
 import classes from './AddComic.module.css';
 import { Button } from 'react-bootstrap';
-import './Form.css'
+import './Form.css';
 
 const Form = (props) => {
-	const [list, setList] = useState([]);
 	const titleChapterRef = useRef('');
 	const numberChapter = useRef('');
 	function submitHandler(event) {
@@ -17,15 +16,14 @@ const Form = (props) => {
 			titleChapter: titleChapterRef.current.value,
 			numberChapter: numberChapter.current.value,
 		};
+		console.log(detailData);
 		props.addFormHandler(false);
-		const li = (prev => [...prev, detailData])
-		console.log(li)
-		props.onListData(li)
+		props.onListData(detailData);
 		//props.addComicHandler(comic);
 	}
 	return (
 		<div style={{ marginTop: '100%' }}>
-			<form  className='border-ar' onSubmit={submitHandler}>
+			<form className='border-ar' onSubmit={submitHandler}>
 				<div className={classes.control}>
 					<label htmlFor='title'>Title chapter</label>
 					<input type='text' id='title' ref={titleChapterRef} />
