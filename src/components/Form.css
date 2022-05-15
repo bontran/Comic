@@ -1,0 +1,6 @@
+.border-ar {
+    border: 2px solid  rgb(47, 121, 167);
+    background: rgb(47, 121, 167);
+    border-radius:  10px;
+    padding: 20px;
+}

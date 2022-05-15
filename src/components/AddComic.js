@@ -1,6 +1,7 @@
 import React, { useRef } from 'react';
 import DragAndDrog from './DragAnDrop';
 import classes from './AddComic.module.css';
+import { Button } from 'react-bootstrap';
 
 function AddComic(props) {
 	const titleRef = useRef('');
@@ -8,6 +9,7 @@ function AddComic(props) {
 	const releaseDateRef = useRef('');
 	const chapterRef = useRef('');
 
+	// props.listFormData.map(data => console.log(data))
 	function submitHandler(event) {
 		event.preventDefault();
 
@@ -20,7 +22,7 @@ function AddComic(props) {
 			chapter: chapterRef.current.value,
 		};
 
-		props.onAddMovie(comic);
+		props.addComicHandler(comic);
 	}
 
 	return (
@@ -41,8 +43,8 @@ function AddComic(props) {
 				<label htmlFor='chapter'>Chapter</label>
 				<input type='text' id='chapter' ref={chapterRef} />
 			</div>
-			<DragAndDrog></DragAndDrog>
-			<button>Add Comic</button>
+			<DragAndDrog addFormHandler={props.addFormHandler}></DragAndDrog>
+			<button className='w-100 text-center mt-3'>Add Comic</button>
 		</form>
 	);
 }

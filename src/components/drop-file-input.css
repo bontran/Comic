@@ -58,10 +58,18 @@
     padding: 15px;
     border-radius: 20px;
 }
-
+.drop-file-display {
+    display: flex;
+    flex-direction: row;
+}
 .drop-file-preview__item img {
     width: 50px;
+    
     margin-right: 20px;
+}
+
+.drop-file-preview__item__info p {
+    margin: 0;
 }
 
 .drop-file-preview__item__info {
