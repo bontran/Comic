@@ -11,7 +11,8 @@ const MovieList = (props) => {
 					key={movie.id}
 					title={movie.title}
 					releaseDate={movie.releaseDate}
-					openingText={movie.openingText}
+					owner={movie.owner}
+					chapter={movie.chapter}
 				/>
 			))}
 		</ul>

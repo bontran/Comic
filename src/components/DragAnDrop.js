@@ -1,15 +1,27 @@
 import './DragAndDrop.module.css';
 import DropFileInput from './DropFileInput';
 
-const DragAndDrog = () => {
+const DragAndDrog = (props) => {
 	const onFileChange = (files) => {
 		console.log(files);
+		// if (files.length > 0) {
+		// 	props.addFormHandler(true);
+		// } else {
+		// 	props.addFormHandler(false);
+		// }
+	};
+	const onContentChange = (content) => {
+		console.log(content);
 	};
 
 	return (
 		<div className='box'>
 			<h2 className='header'>React drop files input</h2>
-			<DropFileInput onFileChange={(files) => onFileChange(files)} />
+			<DropFileInput
+				addFormHandler={props.addFormHandler}
+				onContentChange={onContentChange}
+				onFileChange={(files) => onFileChange(files)}
+			/>
 		</div>
 	);
 };

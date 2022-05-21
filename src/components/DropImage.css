@@ -1,0 +1,20 @@
+.app {
+  border: 2px solid rgb(47, 121, 167);
+  background: rgb(47, 121, 167);
+  height: 250px;
+  padding: 20px;
+
+}
+
+.input {
+  width: 100%;
+  border-radius: 10px;
+  padding: 10px;
+  background: whitesmoke;
+  color: black;
+  margin-bottom: 10px;
+}
+
+label {
+  margin-bottom: 5px;
+}
