@@ -20,6 +20,7 @@ import Home from './components/Home';
 import AddComic from './components/AddComic';
 import NotFound from './components/NotFound';
 import DropImage from './components/DropImage';
+import { database, ref, set } from './components/fire';
 
 const App = () => {
 	const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -29,9 +30,11 @@ const App = () => {
 	const history = useNavigate();
 	const [sidebarWidth, setSidebarWidth] = useState(undefined);
 	const [sidebarTop, setSidebarTop] = useState(undefined);
-
+	const db = database;
 	useEffect(() => {
-		const sidebarEl = document.querySelector('.sidebar')?.getBoundingClientRect();
+		const sidebarEl = document
+			.querySelector('.sidebar')
+			?.getBoundingClientRect();
 		setSidebarWidth(sidebarEl?.width);
 		setSidebarTop(sidebarEl?.top);
 	}, []);
@@ -53,7 +56,7 @@ const App = () => {
 		} else {
 			sidebarEl.classList.remove('is-sticky');
 		}
-	}
+	};
 
 	useEffect(() => {
 		const storedUserLoggedInInformation = localStorage.getItem('isLoggedIn');
@@ -77,6 +80,7 @@ const App = () => {
 			);
 			const data = await response.json();
 			console.log(data);
+			set(ref(db, 'ContentOfBook/' + comic.idBook), listFormData);
 		} catch (err) {
 			console.log(err);
 		}
@@ -122,9 +126,8 @@ const App = () => {
 						</Routes>
 					</div>
 					<div className='col-7 sticky'>
-						<div classname="sidebar">
-							<div className='row' >
-								<DropImage></DropImage>
+						<div>
+							<div className='row'>
 								{isPopup && (
 									<Form
 										index={index}

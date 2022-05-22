@@ -2,7 +2,7 @@ import React, { useRef } from 'react';
 import DragAndDrog from './DragAnDrop';
 import classes from './AddComic.module.css';
 import { Button } from 'react-bootstrap';
-import {v4 as uuidv4} from 'uuid';
+import { v4 as uuidv4 } from 'uuid';
 import DropImage from '../components/DropImage';
 
 function AddComic(props) {
@@ -29,9 +29,8 @@ function AddComic(props) {
 			coverImage: coverImageRef.current.value,
 			amountOfVisit: amountOfVisitRef.current.value,
 			author: ownerRef.current.value,
-			status: statusRef.current.value
+			status: statusRef.current.value,
 		};
-
 		props.addComicHandler(comic);
 		console.log(comic);
 	}
@@ -58,13 +57,13 @@ function AddComic(props) {
 				<label htmlFor='mountChapter'>Mount chapter</label>
 				<input type='text' id='mountChapter' ref={mountChapterRef} />
 			</div>
-			
+
 			<div className={classes.control}>
 				<label htmlFor='status'>Status</label>
 				<input type='text' id='Status' ref={statusRef} />
 			</div>
 			<DragAndDrog addFormHandler={props.addFormHandler}></DragAndDrog>
-			
+
 			<button className='w-100 text-center mt-3'>Add Comic</button>
 		</form>
 	);

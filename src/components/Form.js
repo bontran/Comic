@@ -3,9 +3,9 @@ import DragAndDrog from './DragAnDrop';
 import classes from './AddComic.module.css';
 import { Button } from 'react-bootstrap';
 import './Form.css';
-import { storage } from "./fire";
+import { storage } from './fire';
 import DropImage from './DropImage';
-import { ref, getDownloadURL, uploadBytesResumable } from "firebase/storage";
+import { ref, getDownloadURL, uploadBytesResumable } from 'firebase/storage';
 
 const Form = (props) => {
 	const titleChapterRef = useRef('');
@@ -13,22 +13,34 @@ const Form = (props) => {
 	const [progress, setProgress] = useState(0);
 	const formHandler = (e) => {
 		e.preventDefault();
-		const file = e.target[2].files[0];
-		uploadFiles(file);
+		const fileImage = e.target[2].files[0];
+		const fileAudio = e.target[3].files[0];
+		uploadFiles(fileImage, fileAudio);
 	};
+
 	const stringHepler = (data) => {
-		const index = data.lastIndexOf(".");
+		const index = data.lastIndexOf('.');
 		return data.substring(index, data.length + 1);
-	}
-	const uploadFiles = (file) => {
+	};
+
+	const uploadFiles = async (fileImage, fileAudio) => {
 		//
-		if (!file) return;
-		const sotrageRef = ref(storage, `files/${file.name}`);
-		const uploadTask = uploadBytesResumable(sotrageRef, file);
-		uploadTask.on(
-			"state_changed",
+		if (!fileImage && !fileAudio) return;
+		const sotrageRef = ref(storage, `files/${fileImage.name}`);
+		const uploadTask = uploadBytesResumable(sotrageRef, fileImage);
+
+		const storageRefAudio = ref(storage, `files/${fileAudio.name}`);
+		const uploadAudioTask = uploadBytesResumable(storageRefAudio, fileAudio);
+		const chapterDetailData = {
+			id: props.index,
+			title: titleChapterRef.current.value,
+			numberChapter: numberChapterRef.current.value,
+		};
+		console.log(chapterDetailData);
+		await uploadTask.on(
+			'state_changed',
 			(snapshot) => {
-				console.log('hello')
+				console.log('hello');
 
 				const prog = Math.round(
 					(snapshot.bytesTransferred / snapshot.totalBytes) * 100
@@ -38,42 +50,49 @@ const Form = (props) => {
 			(error) => console.log(error),
 			() => {
 				getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
-					const chapterDetail = {
-						title: titleChapterRef,
-						numberChapter: numberChapterRef
+					console.log('File available at', downloadURL);
+					console.log(stringHepler(downloadURL));
+					if (stringHepler(downloadURL).includes('jpg')) {
+						chapterDetailData.urlImage = downloadURL;
 					}
-					console.log("File available at", downloadURL);
-					if (stringHepler(downloadURL) === 'jpg') {
-						chapterDetail.urlImage = downloadURL
+					console.log(chapterDetailData);
+
+					//props.addComicHandler(comic);
+				});
+			}
+		);
+		await uploadAudioTask.on(
+			'state_changed',
+			(snapshot) => {
+				console.log('hello');
+
+				const prog = Math.round(
+					(snapshot.bytesTransferred / snapshot.totalBytes) * 100
+				);
+				setProgress(prog);
+			},
+			(error) => console.log(error),
+			() => {
+				getDownloadURL(uploadAudioTask.snapshot.ref).then((downloadURL) => {
+					console.log('File available at', downloadURL);
+					console.log(stringHepler(downloadURL));
+					if (stringHepler(downloadURL).includes('mp3')) {
+						chapterDetailData.urlAudio = downloadURL;
 					}
-					else {
-						if (stringHepler(downloadURL) === 'mp3') {
-							chapterDetail.urlAudio = downloadURL
-						}
-					}
-					console.log("chapter detail=" + chapterDetail)
+					console.log(chapterDetailData);
+					props.addFormHandler(false);
+					props.onListData(chapterDetailData);
+					//props.addComicHandler(comic);
 				});
 			}
 		);
 	};
 
-
-
-	function submitHandler(e) {
+	const submitHandler = (e) => {
 		e.preventDefault();
-		formHandler(e);
-		// could add validation here...
 		console.log(e);
-		const detailData = {
-			id: props.index,
-			titleChapter: titleChapterRef.current.value,
-			numberChapter: numberChapterRef.current.value,
-		};
-		console.log(detailData);
-		props.addFormHandler(false);
-		props.onListData(detailData);
-		//props.addComicHandler(comic);
-	}
+		formHandler(e);
+	};
 	return (
 		<div style={{ marginTop: '100%', width: '400px' }}>
 			<form className='border-ar' onSubmit={submitHandler}>
@@ -86,15 +105,26 @@ const Form = (props) => {
 					<input type='text' id='owner' ref={numberChapterRef} />
 				</div>
 				<div className={classes.control}>
-					<label htmlFor='title-comic'><b>Cover image</b></label>
-					<input type="file" id='title-comic' className='input-l' on />
+					<label htmlFor='title-comic'>
+						<b>Cover image</b>
+					</label>
+					<input type='file' id='title-comic' className='input-l' on />
 					<hr />
 					<h4>Uploading done {progress}%</h4>
 				</div>
 
 				<div className={classes.control}>
-					<label htmlFor='audio'><b>Audio</b></label>
-					<input type="file" id='Audio' className='input-l' onChange={(e) => { console.log(e) }} />
+					<label htmlFor='audio'>
+						<b>Audio</b>
+					</label>
+					<input
+						type='file'
+						id='Audio'
+						className='input-l'
+						onChange={(e) => {
+							console.log(e);
+						}}
+					/>
 					<hr />
 					<h4>Uploading done {progress}%</h4>
 				</div>
