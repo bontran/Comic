@@ -12,6 +12,7 @@ const DragAndDrog = (props) => {
 	};
 	const onContentChange = (content) => {
 		console.log(content);
+		props.onHandlerContent(content);
 	};
 
 	return (

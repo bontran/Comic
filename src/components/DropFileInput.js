@@ -32,9 +32,10 @@ const DropFileInput = (props) => {
 		const reader = new FileReader();
 		reader.onload = async (e) => {
 			const text = e.target.result;
+			console.log(text)
 			const updatedList = [...listChapters, text];
 			setListChapters(updatedList);
-			props.onContentChange(updatedList);
+			props.onContentChange(text);
 		};
 		reader.readAsText(e.target.files[0]);
 	};
@@ -48,13 +49,13 @@ const DropFileInput = (props) => {
 	};
 
 	const handlePopUpForm = (e) => {
-		const index = e.currentTarget.dataset.index;
+		const index = +e.currentTarget.dataset.index + 1;
 		props.addFormHandler(false, index);
 		setTimeout(() => {
 			props.addFormHandler(true, index);
 		}, 500)
 	};
-		//will log the index of the clicked item
+	//will log the index of the clicked item
 	return (
 		<>
 			<div
@@ -75,26 +76,26 @@ const DropFileInput = (props) => {
 					{fileList.map((item, index) => (
 						<div className='drop-file-preview__item' key={index} >
 							<div
-							data-index={index}
-							className='drop-file-display'
-							onClick={handlePopUpForm}>
-							<img
-								src={
-									ImageConfig[item.type.split('/')[1]] || ImageConfig['default']
-								}
-								alt=''
-							/>
-							<span className='drop-file-preview__item__info'>
-								<p>{item.name}</p>
-								<p>{item.size}B</p>
-							</span>
+								data-index={index}
+								className='drop-file-display'
+								onClick={handlePopUpForm}>
+								<img
+									src={
+										ImageConfig[item.type.split('/')[1]] || ImageConfig['default']
+									}
+									alt=''
+								/>
+								<span className='drop-file-preview__item__info'>
+									<p>{item.name}</p>
+									<p>{item.size}B</p>
+								</span>
 							</div>
-						<span
-						className='drop-file-preview__item__del'
-						onClick={() => fileRemove(item)}>
-						x
-						</span>
-					</div>
+							<span
+								className='drop-file-preview__item__del'
+								onClick={() => fileRemove(item)}>
+								x
+							</span>
+						</div>
 					))}
 				</div>
 			) : null}

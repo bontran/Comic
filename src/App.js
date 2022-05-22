@@ -20,7 +20,7 @@ import Home from './components/Home';
 import AddComic from './components/AddComic';
 import NotFound from './components/NotFound';
 import DropImage from './components/DropImage';
-import { database, ref, set } from './components/fire';
+import { database, ref, set, push } from './components/fire';
 
 const App = () => {
 	const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -30,6 +30,7 @@ const App = () => {
 	const history = useNavigate();
 	const [sidebarWidth, setSidebarWidth] = useState(undefined);
 	const [sidebarTop, setSidebarTop] = useState(undefined);
+	const [content, setContent] = useState('');
 	const db = database;
 	useEffect(() => {
 		const sidebarEl = document
@@ -80,7 +81,22 @@ const App = () => {
 			);
 			const data = await response.json();
 			console.log(data);
-			set(ref(db, 'ContentOfBook/' + comic.idBook), listFormData);
+			listFormData.forEach(value => {
+				const chapterOfBook = {
+					chapterName: value.chapterName,
+					idChapter: value.idChapter,
+				}
+				push(ref(db, 'ChapterOfBook/' + comic.idBook), chapterOfBook);
+				console.log(value.contentAudio)
+				const contentOfBook = {
+					contentAudio: value.contentAudio,
+					numberOfChapter: value.numberOfChapter,
+					contentText: value.contentText
+				}
+				console.log(contentOfBook);
+				set(ref(db, `ContentOfBook/${comic.idBook}/${value.idChapter}`), contentOfBook);
+			})
+
 		} catch (err) {
 			console.log(err);
 		}
@@ -88,6 +104,7 @@ const App = () => {
 
 	const addFormHandler = (data, index) => {
 		setIndex(index);
+		console.log(index)
 		setIsPopup(data);
 	};
 
@@ -96,6 +113,10 @@ const App = () => {
 			return [...prevList, data];
 		});
 	};
+
+	const onHandContent = (data) => {
+		setContent(data);
+	}
 	console.log(listFormData);
 	return (
 		<AuthProvider>
@@ -116,6 +137,7 @@ const App = () => {
 								path='/add-comic'
 								element={
 									<AddComic
+										onHandContent={onHandContent}
 										listFormData={listFormData}
 										addFormHandler={addFormHandler}
 										addComicHandler={addComicHandler}
@@ -130,6 +152,7 @@ const App = () => {
 							<div className='row'>
 								{isPopup && (
 									<Form
+										content={content}
 										index={index}
 										onListData={onListData}
 										addFormHandler={addFormHandler}></Form>
