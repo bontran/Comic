@@ -45,13 +45,14 @@ const DropFileInput = (props) => {
 		setFileList(updatedList);
 		setListChapters(updatedList)
 		props.onFileChange(updatedList);
+		props.onHandlerPopUp(false);
 	};
 
 	const handlePopUpForm = (e) => {
 		const index = +e.currentTarget.dataset.index + 1;
-		props.addFormHandler(false, index);
+		props.onHandlerPopUp(false, index);
 		setTimeout(() => {
-			props.addFormHandler(true, index);
+			props.onHandlerPopUp(true, index);
 		}, 500)
 	};
 	//will log the index of the clicked item

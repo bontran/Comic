@@ -12,11 +12,12 @@ const DragAndDrog = (props) => {
 
 	return (
 		<div className='box'>
-			<h2 className='header'>React drop files input</h2>
+			<h6 className='header'>Drop files input</h6>
 			<DropFileInput
 				addFormHandler={props.addFormHandler}
 				onContentChange={onContentChange}
 				onFileChange={(files) => onFileChange(files)}
+				onHandlerPopUp={props.onHandlerPopUp}
 			/>
 		</div>
 	);

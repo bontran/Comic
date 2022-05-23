@@ -6,11 +6,8 @@ const Comic = (props) => {
 	return (
 		<li className={classes.movie}>
 			<h2>Title: {props.title}</h2>
-			<h3>Owner: {props.owner}</h3>
-			<p>Release date: {props.releaseDate}</p>
-			<p>Chapter: {props.chapter}</p>
 			<p>
-				<img src={cloud}></img>
+				<img style={{ width: '100px', height: '100px' }} src={props.coverImage}></img>
 			</p>
 		</li>
 	);

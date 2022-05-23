@@ -2,7 +2,6 @@ import SignUp from './components/SignUp/SignUp';
 import { Container } from 'react-bootstrap';
 import { AuthProvider } from './components/contexts/AuthContext';
 import { useState, useEffect } from 'react';
-import Form from './components/Form';
 import {
 	BrowserRouter as Router,
 	Outlet,
@@ -22,7 +21,6 @@ import { database, ref, set, push, onValue } from './components/fire';
 
 const App = () => {
 	const [isLoggedIn, setIsLoggedIn] = useState(false);
-	const [isPopup, setIsPopup] = useState(false);
 	const [listFormData, setListFormData] = useState([]);
 	const [index, setIndex] = useState(0);
 	const history = useNavigate();
@@ -56,6 +54,7 @@ const App = () => {
 				const chapterOfBook = {
 					chapterName: value.chapterName,
 					idChapter: value.idChapter,
+					numberOfChapter: value.numberOfChapter,
 				}
 				push(ref(db, 'ChapterOfBook/' + comic.idBook), chapterOfBook);
 				console.log(value.contentAudio)
@@ -75,7 +74,6 @@ const App = () => {
 
 	const addFormHandler = (data, index) => {
 		setIndex(index);
-		setIsPopup(data);
 	};
 
 	const onListData = (data) => {
@@ -91,45 +89,45 @@ const App = () => {
 		<AuthProvider>
 			<Nav setIsLoggedIn={setIsLoggedIn}></Nav>
 			<Container>
-				<div className='row'>
-					<div className='col-5'>
-						<Routes>
-							<Route path='/dashboard' element={<Dashboard />}></Route>
-							<Route path='/' element={<Home />}></Route>
-							<Route path='/signup' element={<SignUp />} />
-							<Route
-								path='/login'
-								element={!isLoggedIn && <Login setIsLoggedIn={setIsLoggedIn} />}
+				<Routes>
+					<Route path='/dashboard' element={<Dashboard />}></Route>
+					<Route path='/' element={<Home />}></Route>
+					<Route path='/signup' element={<SignUp />} />
+					<Route
+						path='/login'
+						element={!isLoggedIn && <Login setIsLoggedIn={setIsLoggedIn} />}
+					/>
+					<Route path='/forgot-password' element={<ForgotPassword />} />
+					<Route
+						path='/add-comic'
+						element={
+							<AddComic
+								content={content}
+								index={index}
+								onListData={onListData}
+								addFormHandler={addFormHandler}
+								onHandContent={onHandContent}
+								listFormData={listFormData}
+								addComicHandler={addComicHandler}
 							/>
-							<Route path='/forgot-password' element={<ForgotPassword />} />
-							<Route
-								path='/add-comic'
-								element={
-									<AddComic
-										onHandContent={onHandContent}
-										listFormData={listFormData}
-										addFormHandler={addFormHandler}
-										addComicHandler={addComicHandler}
-									/>
-								}
-							/>
-							<Route path='*' element={<NotFound />} />
-						</Routes>
-					</div>
-					<div className='col-7 sticky'>
-						<div>
-							<div className='row'>
-								{isPopup && (
-									<Form
-										content={content}
-										index={index}
-										onListData={onListData}
-										addFormHandler={addFormHandler}></Form>
-								)}
-							</div>
-						</div>
+						}
+					/>
+					<Route path='*' element={<NotFound />} />
+				</Routes>
+				{/* <div className='col-4'>
+					<div>
+						{isPopup && (
+							<Form
+								content={content}
+								index={index}
+								onListData={onListData}
+								addFormHandler={addFormHandler}></Form>
+						)}
 					</div>
 				</div>
+				<div className="col-3">
+
+				</div> */}
 			</Container>
 		</AuthProvider>
 	);

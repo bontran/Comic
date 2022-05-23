@@ -66,7 +66,7 @@ const Form = (props) => {
 		formHandler(e);
 	};
 	return (
-		<div style={{ marginTop: '100%', width: '400px' }}>
+		<div style={{ width: '400px' }}>
 			<form className='border-ar' onSubmit={submitHandler}>
 				<div className={classes.control}>
 					<label htmlFor='title'>Title chapter</label>

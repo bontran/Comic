@@ -1,6 +1,6 @@
 .drop-file-input {
     position: relative;
-    width: 400px;
+
     height: 200px;
     border: 2px dashed var(--border-color);
     border-radius: 20px;
@@ -58,13 +58,15 @@
     padding: 15px;
     border-radius: 20px;
 }
+
 .drop-file-display {
     display: flex;
     flex-direction: row;
 }
+
 .drop-file-preview__item img {
     width: 50px;
-    
+
     margin-right: 20px;
 }
 

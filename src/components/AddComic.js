@@ -6,17 +6,20 @@ import { v4 as uuidv4 } from "uuid";
 import { ref, getDownloadURL, uploadBytesResumable } from "firebase/storage";
 import { storage } from "./fire";
 import Dropdown from "./Dropdown";
+import Form from './Form'
 
 function AddComic(props) {
 	const titleRef = useRef("");
 	const ownerRef = useRef("");
-	const mountChapterRef = useRef(0);
-	const kindOfBookRef = useRef("");
-	const amountOfVisitRef = useRef(0);
-	const statusRef = useRef("");
+	const mountChapterRef = useRef('');
+	const amountOfVisitRef = useRef(12);
 	const [progress, setProgress] = useState(0);
 	const [valueStatus, setValueStatus] = useState("");
 	const [kindOfBook, setKindOfBook] = useState("");
+	const descriptionRef = useRef('');
+	const imageRef = useRef('');
+	const [isPopup, setIsPopup] = useState(false);
+
 	let myuuid = uuidv4();
 	const statuses = [
 		{ label: "Done", value: "done" },
@@ -47,11 +50,12 @@ function AddComic(props) {
 		const comic = {
 			name: titleRef.current.value,
 			mountChapter: mountChapterRef.current.value,
-			kindOfBook: kindOfBookRef.current.value,
+			kindOfBook: kindOfBook,
 			idBook: myuuid,
 			amountOfVisit: amountOfVisitRef.current.value,
 			author: ownerRef.current.value,
-			status: statusRef.current.value,
+			status: valueStatus,
+			description: descriptionRef.current.value
 		};
 		await uploadTask.on(
 			"state_changed",
@@ -80,12 +84,18 @@ function AddComic(props) {
 
 	function submitHandler(e) {
 		e.preventDefault();
-		console.log(e);
 		formHandler(e);
-		// could add validation here...
+		titleRef.current.value = '';
+		mountChapterRef.current.value = '';
+		setKindOfBook('');
+		setValueStatus('');
+		//amountOfVisitRef.current.value = '';
+		ownerRef.current.value = '';
+		descriptionRef.current.value = '';
+		imageRef.current.value = '';
 	}
 
-	const onHanlerStatus = (event) => {
+	const onHandlerStatus = (event) => {
 		setValueStatus(event.target.value);
 	};
 
@@ -93,57 +103,78 @@ function AddComic(props) {
 		setKindOfBook(event.target.value);
 	};
 
+	const onHandlerPopUp = (data) => {
+		setIsPopup(data);
+	}
 	// const onHandlerContent = useMemo((data) => {
 	// 	setContent(data);
 	// }, [content]);
 
 	// props.onHandContent(content);
 	return (
+
 		<form onSubmit={submitHandler}>
-			<div className={classes.control}>
-				<label htmlFor="title">Title</label>
-				<input type="text" id="title" ref={titleRef} />
+			<div className="row">
+				<div className='col-4'>
+					<div className={classes.control}>
+						<label htmlFor="title">Title</label>
+						<input type="text" id="title" ref={titleRef} />
+					</div>
+					<div className={classes.control}>
+						<label htmlFor="author">Author</label>
+						<input type="text" id="author" ref={ownerRef} />
+					</div>
+					<div>
+						<Dropdown
+							className={classes.control}
+							label="Kind of book"
+							options={typeOfBook}
+							value={kindOfBook}
+							onChange={onHandlerKindOfBook}
+						></Dropdown>
+					</div>
+					<div className={classes.control}>
+						<label htmlFor="coverImage">
+							<b>Cover image</b>
+						</label>
+						<input type="file" id="coverImage" className="input-l" ref={imageRef} />
+						<hr />
+						<h4>Uploading done {progress}%</h4>
+					</div>
+					<div className={classes.control}>
+						<label htmlFor="mountChapter">Mount chapter</label>
+						<input type="text" id="mountChapter" ref={mountChapterRef} />
+					</div>
+					<div>
+						<Dropdown
+							className={classes.control}
+							label="Status"
+							options={statuses}
+							value={valueStatus}
+							onChange={onHandlerStatus}
+						></Dropdown>
+					</div>
+					<button className="w-100 text-center mt-3">Add Comic</button>
+				</div>
+
+				<div className='col-3'>
+					<DragAndDrog
+						onHandlerPopUp={onHandlerPopUp}
+						addFormHandler={props.addFormHandler}
+						onHandContent={props.onHandContent}
+					></DragAndDrog>
+				</div>
+				<div className='col-5'>
+					{isPopup && <Form
+						content={props.content}
+						index={props.index}
+						onListData={props.onListData}
+					></Form>}
+				</div>
 			</div>
-			<div className={classes.control}>
-				<label htmlFor="author">Author</label>
-				<input type="text" id="author" ref={ownerRef} />
-			</div>
-			<div>
-				<Dropdown
-					className={classes.control}
-					label="Kind of book"
-					options={typeOfBook}
-					value={kindOfBook}
-					onChange={onHandlerKindOfBook}
-				></Dropdown>
-			</div>
-			<div className={classes.control}>
-				<label htmlFor="coverImage">
-					<b>Cover image</b>
-				</label>
-				<input type="file" id="coverImage" className="input-l" />
-				<hr />
-				<h4>Uploading done {progress}%</h4>
-			</div>
-			<div className={classes.control}>
-				<label htmlFor="mountChapter">Mount chapter</label>
-				<input type="text" id="mountChapter" ref={mountChapterRef} />
-			</div>
-			<div>
-				<Dropdown
-					className={classes.control}
-					label="Status"
-					options={statuses}
-					value={valueStatus}
-					onChange={onHanlerStatus}
-				></Dropdown>
-			</div>
-			<DragAndDrog
-				addFormHandler={props.addFormHandler}
-				onHandContent={props.onHandContent}
-			></DragAndDrog>
-			<button className="w-100 text-center mt-3">Add Comic</button>
-		</form>
+		</form >
+
+
 	);
 }
 

@@ -1,6 +1,5 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import ComicsList from './ComicsList';
-import { Outlet } from 'react-router-dom';
 
 const Home = () => {
 	const [movies, setMovies] = useState([]);
@@ -28,6 +27,11 @@ const Home = () => {
 					id: key,
 					title: data[key].title,
 					owner: data[key].owner,
+					coverImage: data[key].coverImage,
+					description: data[key].description,
+					kindOfBook: data[key].kindOfBook,
+					mountChapter: data[key].kindOfBook,
+
 				});
 			}
 
