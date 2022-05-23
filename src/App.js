@@ -13,14 +13,12 @@ import {
 import Nav from './components/Nav';
 import Dashboard from './components/Dashboard';
 import Login from './components/Login/Login';
-import PrivateRoute from './components/PrivateRoute';
 import ForgotPassword from './components/ForgotPassword';
 import './App.css';
 import Home from './components/Home';
 import AddComic from './components/AddComic';
 import NotFound from './components/NotFound';
-import DropImage from './components/DropImage';
-import { database, ref, set, push } from './components/fire';
+import { database, ref, set, push, onValue } from './components/fire';
 
 const App = () => {
 	const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -28,36 +26,8 @@ const App = () => {
 	const [listFormData, setListFormData] = useState([]);
 	const [index, setIndex] = useState(0);
 	const history = useNavigate();
-	const [sidebarWidth, setSidebarWidth] = useState(undefined);
-	const [sidebarTop, setSidebarTop] = useState(undefined);
 	const [content, setContent] = useState('');
 	const db = database;
-	useEffect(() => {
-		const sidebarEl = document
-			.querySelector('.sidebar')
-			?.getBoundingClientRect();
-		setSidebarWidth(sidebarEl?.width);
-		setSidebarTop(sidebarEl?.top);
-	}, []);
-
-	useEffect(() => {
-		if (!sidebarTop) return;
-
-		window.addEventListener('scroll', isSticky);
-		return () => {
-			window.removeEventListener('scroll', isSticky);
-		};
-	}, [sidebarTop]);
-
-	const isSticky = (e) => {
-		const sidebarEl = document.querySelector('.sidebar');
-		const scrollTop = window.scrollY;
-		if (scrollTop >= sidebarTop - 10) {
-			sidebarEl.classList.add('is-sticky');
-		} else {
-			sidebarEl.classList.remove('is-sticky');
-		}
-	};
 
 	useEffect(() => {
 		const storedUserLoggedInInformation = localStorage.getItem('isLoggedIn');
@@ -66,6 +36,7 @@ const App = () => {
 			setIsLoggedIn(true);
 		}
 	}, []);
+
 
 	const addComicHandler = async (comic) => {
 		try {
@@ -104,7 +75,6 @@ const App = () => {
 
 	const addFormHandler = (data, index) => {
 		setIndex(index);
-		console.log(index)
 		setIsPopup(data);
 	};
 
@@ -117,7 +87,6 @@ const App = () => {
 	const onHandContent = (data) => {
 		setContent(data);
 	}
-	console.log(listFormData);
 	return (
 		<AuthProvider>
 			<Nav setIsLoggedIn={setIsLoggedIn}></Nav>

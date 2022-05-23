@@ -1,38 +1,46 @@
-import React, { useRef, useState } from 'react';
-import DragAndDrog from './DragAnDrop';
-import classes from './AddComic.module.css';
-import { Button } from 'react-bootstrap';
-import { v4 as uuidv4 } from 'uuid';
-import DropImage from '../components/DropImage';
-import { ref, getDownloadURL, uploadBytesResumable } from 'firebase/storage';
-import { storage } from './fire';
+import React, { useMemo, useRef, useState } from "react";
+import DragAndDrog from "./DragAnDrop";
+import classes from "./AddComic.module.css";
+import { Button } from "react-bootstrap";
+import { v4 as uuidv4 } from "uuid";
+import { ref, getDownloadURL, uploadBytesResumable } from "firebase/storage";
+import { storage } from "./fire";
+import Dropdown from "./Dropdown";
 
 function AddComic(props) {
-	const titleRef = useRef('');
-	const ownerRef = useRef('');
-	const chapterRef = useRef('');
+	const titleRef = useRef("");
+	const ownerRef = useRef("");
 	const mountChapterRef = useRef(0);
-	const kindOfBookRef = useRef('');
-	const coverImageRef = useRef('');
+	const kindOfBookRef = useRef("");
 	const amountOfVisitRef = useRef(0);
-	const statusRef = useRef('');
+	const statusRef = useRef("");
 	const [progress, setProgress] = useState(0);
-	const [content, setContent] = useState('');
+	const [valueStatus, setValueStatus] = useState("");
+	const [kindOfBook, setKindOfBook] = useState("");
 	let myuuid = uuidv4();
+	const statuses = [
+		{ label: "Done", value: "done" },
+		{ label: "Undone", value: "undone" },
+	];
+
+	const typeOfBook = [
+		{ label: "Horor", value: "horor" },
+		{ label: "Comedy", value: "comedy" },
+		{ label: "Action", value: "action" },
+	];
+
 	const formHandler = (e) => {
 		e.preventDefault();
-		// const fileImage = e.target[2].files[0];
 		const fileImage = e.target[3].files[0];
 		uploadFiles(fileImage);
 	};
 
 	const stringHepler = (data) => {
-		const index = data.lastIndexOf('.');
+		const index = data.lastIndexOf(".");
 		return data.substring(index, data.length + 1);
 	};
 
 	const uploadFiles = async (fileImage) => {
-		//
 		if (!fileImage) return;
 		const sotrageRef = ref(storage, `files/${fileImage.name}`);
 		const uploadTask = uploadBytesResumable(sotrageRef, fileImage);
@@ -46,9 +54,9 @@ function AddComic(props) {
 			status: statusRef.current.value,
 		};
 		await uploadTask.on(
-			'state_changed',
+			"state_changed",
 			(snapshot) => {
-				console.log('hello');
+				console.log("hello");
 
 				const prog = Math.round(
 					(snapshot.bytesTransferred / snapshot.totalBytes) * 100
@@ -58,9 +66,9 @@ function AddComic(props) {
 			(error) => console.log(error),
 			() => {
 				getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
-					console.log('File available at', downloadURL);
+					console.log("File available at", downloadURL);
 					console.log(stringHepler(downloadURL));
-					if (stringHepler(downloadURL).includes('jpg')) {
+					if (stringHepler(downloadURL).includes("jpg")) {
 						comic.coverImage = downloadURL;
 					}
 					console.log(comic);
@@ -72,55 +80,69 @@ function AddComic(props) {
 
 	function submitHandler(e) {
 		e.preventDefault();
-		console.log(e)
+		console.log(e);
 		formHandler(e);
 		// could add validation here...
 	}
 
-	const onHandlerContent = (data) => {
-		setContent(data);
-	}
+	const onHanlerStatus = (event) => {
+		setValueStatus(event.target.value);
+	};
 
-	props.onHandContent(content);
+	const onHandlerKindOfBook = (event) => {
+		setKindOfBook(event.target.value);
+	};
 
+	// const onHandlerContent = useMemo((data) => {
+	// 	setContent(data);
+	// }, [content]);
+
+	// props.onHandContent(content);
 	return (
 		<form onSubmit={submitHandler}>
 			<div className={classes.control}>
-				<label htmlFor='title'>Title</label>
-				<input type='text' id='title' ref={titleRef} />
+				<label htmlFor="title">Title</label>
+				<input type="text" id="title" ref={titleRef} />
 			</div>
 			<div className={classes.control}>
-				<label htmlFor='author'>Author</label>
-				<input type='text' id='author' ref={ownerRef} />
+				<label htmlFor="author">Author</label>
+				<input type="text" id="author" ref={ownerRef} />
+			</div>
+			<div>
+				<Dropdown
+					className={classes.control}
+					label="Kind of book"
+					options={typeOfBook}
+					value={kindOfBook}
+					onChange={onHandlerKindOfBook}
+				></Dropdown>
 			</div>
 			<div className={classes.control}>
-				<label htmlFor='kindOfBook'>Kind of book</label>
-				<input type='text' id='kindOfBook' ref={kindOfBookRef} />
-			</div>
-			<div className={classes.control}>
-				<label htmlFor='coverImage'>
+				<label htmlFor="coverImage">
 					<b>Cover image</b>
 				</label>
-				<input type='file' id='coverImage' className='input-l' on />
+				<input type="file" id="coverImage" className="input-l" />
 				<hr />
 				<h4>Uploading done {progress}%</h4>
 			</div>
-			{/* <div className={classes.control}>
-				<label htmlFor='coverImage'>Cover image</label>
-				<input type='text' id='coverImage' ref={coverImageRef} />
-			</div> */}
 			<div className={classes.control}>
-				<label htmlFor='mountChapter'>Mount chapter</label>
-				<input type='text' id='mountChapter' ref={mountChapterRef} />
+				<label htmlFor="mountChapter">Mount chapter</label>
+				<input type="text" id="mountChapter" ref={mountChapterRef} />
 			</div>
-
-			<div className={classes.control}>
-				<label htmlFor='status'>Status</label>
-				<input type='text' id='Status' ref={statusRef} />
+			<div>
+				<Dropdown
+					className={classes.control}
+					label="Status"
+					options={statuses}
+					value={valueStatus}
+					onChange={onHanlerStatus}
+				></Dropdown>
 			</div>
-			<DragAndDrog addFormHandler={props.addFormHandler} onHandlerContent={onHandlerContent}></DragAndDrog>
-
-			<button className='w-100 text-center mt-3'>Add Comic</button>
+			<DragAndDrog
+				addFormHandler={props.addFormHandler}
+				onHandContent={props.onHandContent}
+			></DragAndDrog>
+			<button className="w-100 text-center mt-3">Add Comic</button>
 		</form>
 	);
 }

@@ -1,0 +1,7 @@
+.option-border {
+    font: inherit;
+    padding: 0.2rem;
+    border-radius: 12px;
+    border: 1px solid #ccc;
+    width: 100%;
+}

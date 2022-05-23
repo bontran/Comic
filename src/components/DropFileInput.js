@@ -9,7 +9,6 @@ const DropFileInput = (props) => {
 	const wrapperRef = useRef(null);
 	const [fileList, setFileList] = useState([]);
 	const [listChapters, setListChapters] = useState([]);
-	const [index, setIndex] = useState(0);
 
 	const onDragEnter = () => wrapperRef.current.classList.add('dragover');
 
@@ -32,7 +31,6 @@ const DropFileInput = (props) => {
 		const reader = new FileReader();
 		reader.onload = async (e) => {
 			const text = e.target.result;
-			console.log(text)
 			const updatedList = [...listChapters, text];
 			setListChapters(updatedList);
 			props.onContentChange(text);
@@ -45,6 +43,7 @@ const DropFileInput = (props) => {
 		const updatedList = [...fileList];
 		updatedList.splice(fileList.indexOf(file), 1);
 		setFileList(updatedList);
+		setListChapters(updatedList)
 		props.onFileChange(updatedList);
 	};
 

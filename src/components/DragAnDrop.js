@@ -3,16 +3,11 @@ import DropFileInput from './DropFileInput';
 
 const DragAndDrog = (props) => {
 	const onFileChange = (files) => {
-		console.log(files);
-		// if (files.length > 0) {
-		// 	props.addFormHandler(true);
-		// } else {
-		// 	props.addFormHandler(false);
-		// }
+		//console.log(files);
 	};
 	const onContentChange = (content) => {
 		console.log(content);
-		props.onHandlerContent(content);
+		props.onHandContent(content)
 	};
 
 	return (

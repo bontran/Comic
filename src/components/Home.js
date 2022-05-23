@@ -7,12 +7,12 @@ const Home = () => {
 	const [isLoading, setIsLoading] = useState(false);
 	const [err, setErr] = useState(null);
 
-	const fetchMoviesHandler = useCallback(async () => {
+	const fetchComicHandler = useCallback(async () => {
 		setIsLoading(true);
 		setErr(null);
 		try {
 			const response = await fetch(
-				'https://react-http-6db68-default-rtdb.firebaseio.com/movies.json'
+				'https://react-http-6db68-default-rtdb.firebaseio.com/allBooks.json'
 			);
 
 			if (!response.ok) {
@@ -28,8 +28,6 @@ const Home = () => {
 					id: key,
 					title: data[key].title,
 					owner: data[key].owner,
-					releaseDate: data[key].releaseDate,
-					chapter: data[key].chapter,
 				});
 			}
 
@@ -40,7 +38,7 @@ const Home = () => {
 		setIsLoading(false);
 	}, []);
 
-	let content = <p>Found no movies</p>;
+	let content = <p>Found no comics</p>;
 
 	if (movies.length > 0) {
 		content = <ComicsList movies={movies} />;
@@ -54,8 +52,8 @@ const Home = () => {
 	}
 
 	useEffect(() => {
-		fetchMoviesHandler();
-	}, [fetchMoviesHandler]);
+		fetchComicHandler();
+	}, [fetchComicHandler]);
 	return <div>{content}</div>;
 };
 export default Home;
