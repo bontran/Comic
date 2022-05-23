@@ -43,3 +43,10 @@ button:active {
   background-color: #460897;
   border-color: #460897;
 }
+
+.description {
+  border: 1px solid #ccc;
+  width: 100%;
+  font: inherit;
+  border-radius: 12px;
+}

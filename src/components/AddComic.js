@@ -8,7 +8,7 @@ function AddComic(props) {
 	const ownerRef = useRef('');
 	const releaseDateRef = useRef('');
 	const chapterRef = useRef('');
-
+	const descriptionRef = useRef('');
 	function submitHandler(event) {
 		event.preventDefault();
 
@@ -20,9 +20,10 @@ function AddComic(props) {
 			releaseDate: releaseDateRef.current.value,
 			chapter: chapterRef.current.value,
 			listChapterDetails: props.listFormData,
+			description: descriptionRef.current.value
 		};
 
-		//props.addComicHandler(comic);
+		props.addComicHandler(comic);
 		console.log(comic);
 	}
 
@@ -43,6 +44,10 @@ function AddComic(props) {
 			<div className={classes.control}>
 				<label htmlFor='chapter'>Chapter</label>
 				<input type='text' id='chapter' ref={chapterRef} />
+			</div>
+			<div className={classes.control}>
+				<label htmlFor='description'>Description</label>
+				<textarea rows="3" cols="3" type='text' id='description' className={classes.description} ref={descriptionRef} />
 			</div>
 			<DragAndDrog addFormHandler={props.addFormHandler}></DragAndDrog>
 			<button className='w-100 text-center mt-3'>Add Comic</button>
