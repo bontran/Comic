@@ -1,4 +1,4 @@
-import React, { useMemo, useRef, useState } from 'react';
+import React, { useMemo, useRef, useState, useEffect } from 'react';
 import DragAndDrog from './DragAnDrop';
 import classes from './AddComic.module.css';
 import { Button } from 'react-bootstrap';
@@ -37,6 +37,18 @@ function AddComic(props) {
 		{ label: 'Comedy', value: 'comedy' },
 		{ label: 'Action', value: 'action' },
 	];
+
+	useEffect(() => {
+		if (location.state != null) {
+			titleRef.current.value = location.state.name;
+			ownerRef.current.value = location.state.author;
+			mountChapterRef.current.value = location.state.mountChapter;
+			setKindOfBook(location.state.kindOfBook);
+			setValueStatus(location.state.status);
+			descriptionRef.current.value = location.state.description + '';
+			//amountOfVisitRef.current.value = +location.state.amountOfVisit;
+		}
+	}, []);
 
 	const formHandler = (e) => {
 		e.preventDefault();
@@ -122,7 +134,6 @@ function AddComic(props) {
 
 	return (
 		<div className='row'>
-			{location && <div>{'data' + location.state}</div>}
 			<div className='col-4'>
 				<form onSubmit={submitHandler} ref={formRef}>
 					<div className={classes.control}>
