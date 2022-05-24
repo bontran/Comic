@@ -11,7 +11,7 @@ const Home = () => {
 		setErr(null);
 		try {
 			const response = await fetch(
-				'https://react-http-6db68-default-rtdb.firebaseio.com/allBooks.json'
+				'https://ebookreader-5bd9b-default-rtdb.asia-southeast1.firebasedatabase.app/allBooks.json'
 			);
 
 			if (!response.ok) {
@@ -25,16 +25,14 @@ const Home = () => {
 			for (const key in data) {
 				loadedMovies.push({
 					id: key,
-					title: data[key].title,
+					name: data[key].name,
 					owner: data[key].owner,
 					coverImage: data[key].coverImage,
 					description: data[key].description,
 					kindOfBook: data[key].kindOfBook,
 					mountChapter: data[key].kindOfBook,
-
 				});
 			}
-
 			setMovies(loadedMovies);
 		} catch (err) {
 			setErr(err.message);

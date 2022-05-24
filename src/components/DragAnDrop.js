@@ -7,14 +7,18 @@ const DragAndDrog = (props) => {
 	};
 	const onContentChange = (content) => {
 		console.log(content);
-		props.onHandContent(content)
+		props.onHandContent(content);
+	};
+
+	const onGetIndex = (index) => {
+		props.getIndex(index);
 	};
 
 	return (
 		<div className='box'>
 			<h6 className='header'>Drop files input</h6>
 			<DropFileInput
-				addFormHandler={props.addFormHandler}
+				getIndex={onGetIndex}
 				onContentChange={onContentChange}
 				onFileChange={(files) => onFileChange(files)}
 				onHandlerPopUp={props.onHandlerPopUp}

@@ -22,9 +22,7 @@ import { database, ref, set, push, onValue } from './components/fire';
 const App = () => {
 	const [isLoggedIn, setIsLoggedIn] = useState(false);
 	const [listFormData, setListFormData] = useState([]);
-	const [index, setIndex] = useState(0);
 	const history = useNavigate();
-	const [content, setContent] = useState('');
 	const db = database;
 
 	useEffect(() => {
@@ -35,11 +33,10 @@ const App = () => {
 		}
 	}, []);
 
-
 	const addComicHandler = async (comic) => {
 		try {
 			const response = await fetch(
-				'https://react-http-6db68-default-rtdb.firebaseio.com/allBooks.json',
+				'https://ebookreader-5bd9b-default-rtdb.asia-southeast1.firebasedatabase.app/allBooks.json',
 				{
 					method: 'POST',
 					body: JSON.stringify(comic),
@@ -49,42 +46,36 @@ const App = () => {
 				}
 			);
 			const data = await response.json();
-			console.log(data);
-			listFormData.forEach(value => {
+			console.log(listFormData);
+			listFormData.forEach((value) => {
 				const chapterOfBook = {
 					chapterName: value.chapterName,
 					idChapter: value.idChapter,
 					numberOfChapter: value.numberOfChapter,
-				}
+				};
 				push(ref(db, 'ChapterOfBook/' + comic.idBook), chapterOfBook);
-				console.log(value.contentAudio)
+				console.log(value.contentAudio);
 				const contentOfBook = {
 					contentAudio: value.contentAudio,
 					numberOfChapter: value.numberOfChapter,
-					contentText: value.contentText
-				}
+					contentText: value.contentText,
+				};
 				console.log(contentOfBook);
-				set(ref(db, `ContentOfBook/${comic.idBook}/${value.idChapter}`), contentOfBook);
-			})
-
+				set(
+					ref(db, `ContentOfBook/${comic.idBook}/${value.idChapter}`),
+					contentOfBook
+				);
+			});
 		} catch (err) {
 			console.log(err);
 		}
 	};
-
-	const addFormHandler = (data, index) => {
-		setIndex(index);
-	};
-
 	const onListData = (data) => {
 		setListFormData((prevList) => {
 			return [...prevList, data];
 		});
 	};
 
-	const onHandContent = (data) => {
-		setContent(data);
-	}
 	return (
 		<AuthProvider>
 			<Nav setIsLoggedIn={setIsLoggedIn}></Nav>
@@ -102,11 +93,7 @@ const App = () => {
 						path='/add-comic'
 						element={
 							<AddComic
-								content={content}
-								index={index}
 								onListData={onListData}
-								addFormHandler={addFormHandler}
-								onHandContent={onHandContent}
 								listFormData={listFormData}
 								addComicHandler={addComicHandler}
 							/>
@@ -114,20 +101,6 @@ const App = () => {
 					/>
 					<Route path='*' element={<NotFound />} />
 				</Routes>
-				{/* <div className='col-4'>
-					<div>
-						{isPopup && (
-							<Form
-								content={content}
-								index={index}
-								onListData={onListData}
-								addFormHandler={addFormHandler}></Form>
-						)}
-					</div>
-				</div>
-				<div className="col-3">
-
-				</div> */}
 			</Container>
 		</AuthProvider>
 	);

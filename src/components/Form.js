@@ -9,11 +9,10 @@ import { ref, getDownloadURL, uploadBytesResumable } from 'firebase/storage';
 
 const Form = (props) => {
 	const titleChapterRef = useRef('');
-	const numberChapterRef = useRef('');
 	const [progress, setProgress] = useState(0);
 	const formHandler = (e) => {
 		e.preventDefault();
-		console.log(e)
+		console.log(e);
 		// const fileImage = e.target[2].files[0];
 		const fileAudio = e.target[1].files[0];
 		uploadFiles(fileAudio);
@@ -30,10 +29,10 @@ const Form = (props) => {
 		const storageRefAudio = ref(storage, `files/${fileAudio.name}`);
 		const uploadAudioTask = uploadBytesResumable(storageRefAudio, fileAudio);
 		const chapterOfBook = {
-			idChapter: "idChapter" + props.index,
+			idChapter: 'idChapter' + props.index,
 			chapterName: titleChapterRef.current.value,
 			numberOfChapter: props.index,
-			contentText: props.content
+			contentText: props.content,
 		};
 		await uploadAudioTask.on(
 			'state_changed',
@@ -54,8 +53,9 @@ const Form = (props) => {
 						chapterOfBook.contentAudio = downloadURL;
 					}
 					console.log(chapterOfBook);
-					props.addFormHandler(false);
+					props.onHandlerPopUp(false);
 					props.onListData(chapterOfBook);
+					console.log('form content===' + chapterOfBook);
 				});
 			}
 		);
@@ -66,7 +66,7 @@ const Form = (props) => {
 		formHandler(e);
 	};
 	return (
-		<div style={{ width: '400px' }}>
+		<div style={{ width: '100%' }}>
 			<form className='border-ar' onSubmit={submitHandler}>
 				<div className={classes.control}>
 					<label htmlFor='title'>Title chapter</label>

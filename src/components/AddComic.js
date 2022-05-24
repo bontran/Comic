@@ -1,35 +1,41 @@
-import React, { useMemo, useRef, useState } from "react";
-import DragAndDrog from "./DragAnDrop";
-import classes from "./AddComic.module.css";
-import { Button } from "react-bootstrap";
-import { v4 as uuidv4 } from "uuid";
-import { ref, getDownloadURL, uploadBytesResumable } from "firebase/storage";
-import { storage } from "./fire";
-import Dropdown from "./Dropdown";
-import Form from './Form'
+import React, { useMemo, useRef, useState } from 'react';
+import DragAndDrog from './DragAnDrop';
+import classes from './AddComic.module.css';
+import { Button } from 'react-bootstrap';
+import { v4 as uuidv4 } from 'uuid';
+import { ref, getDownloadURL, uploadBytesResumable } from 'firebase/storage';
+import { storage } from './fire';
+import Dropdown from './Dropdown';
+import Form from './Form';
+import { useLocation } from 'react-router-dom';
 
 function AddComic(props) {
-	const titleRef = useRef("");
-	const ownerRef = useRef("");
+	const titleRef = useRef('');
+	const ownerRef = useRef('');
 	const mountChapterRef = useRef('');
 	const amountOfVisitRef = useRef(12);
 	const [progress, setProgress] = useState(0);
-	const [valueStatus, setValueStatus] = useState("");
-	const [kindOfBook, setKindOfBook] = useState("");
+	const [valueStatus, setValueStatus] = useState('');
+	const [kindOfBook, setKindOfBook] = useState('');
 	const descriptionRef = useRef('');
 	const imageRef = useRef('');
 	const [isPopup, setIsPopup] = useState(false);
-
+	const formRef = useRef();
+	const [content, setContent] = useState('');
 	let myuuid = uuidv4();
+	const [index, setIndex] = useState(0);
+	const location = useLocation();
 	const statuses = [
-		{ label: "Done", value: "done" },
-		{ label: "Undone", value: "undone" },
+		{ label: 'Unknown', value: 'null' },
+		{ label: 'Done', value: 'done' },
+		{ label: 'Undone', value: 'undone' },
 	];
 
 	const typeOfBook = [
-		{ label: "Horor", value: "horor" },
-		{ label: "Comedy", value: "comedy" },
-		{ label: "Action", value: "action" },
+		{ label: 'Choose type of book', value: 'null' },
+		{ label: 'Horor', value: 'horor' },
+		{ label: 'Comedy', value: 'comedy' },
+		{ label: 'Action', value: 'action' },
 	];
 
 	const formHandler = (e) => {
@@ -39,7 +45,7 @@ function AddComic(props) {
 	};
 
 	const stringHepler = (data) => {
-		const index = data.lastIndexOf(".");
+		const index = data.lastIndexOf('.');
 		return data.substring(index, data.length + 1);
 	};
 
@@ -55,12 +61,12 @@ function AddComic(props) {
 			amountOfVisit: amountOfVisitRef.current.value,
 			author: ownerRef.current.value,
 			status: valueStatus,
-			description: descriptionRef.current.value
+			description: descriptionRef.current.value,
 		};
 		await uploadTask.on(
-			"state_changed",
+			'state_changed',
 			(snapshot) => {
-				console.log("hello");
+				console.log('hello');
 
 				const prog = Math.round(
 					(snapshot.bytesTransferred / snapshot.totalBytes) * 100
@@ -70,9 +76,9 @@ function AddComic(props) {
 			(error) => console.log(error),
 			() => {
 				getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
-					console.log("File available at", downloadURL);
+					console.log('File available at', downloadURL);
 					console.log(stringHepler(downloadURL));
-					if (stringHepler(downloadURL).includes("jpg")) {
+					if (stringHepler(downloadURL).includes('jpg')) {
 						comic.coverImage = downloadURL;
 					}
 					console.log(comic);
@@ -85,15 +91,14 @@ function AddComic(props) {
 	function submitHandler(e) {
 		e.preventDefault();
 		formHandler(e);
-		titleRef.current.value = '';
-		mountChapterRef.current.value = '';
+		resetForm();
+	}
+
+	const resetForm = () => {
+		formRef.current.reset();
 		setKindOfBook('');
 		setValueStatus('');
-		//amountOfVisitRef.current.value = '';
-		ownerRef.current.value = '';
-		descriptionRef.current.value = '';
-		imageRef.current.value = '';
-	}
+	};
 
 	const onHandlerStatus = (event) => {
 		setValueStatus(event.target.value);
@@ -105,76 +110,91 @@ function AddComic(props) {
 
 	const onHandlerPopUp = (data) => {
 		setIsPopup(data);
-	}
-	// const onHandlerContent = useMemo((data) => {
-	// 	setContent(data);
-	// }, [content]);
+	};
+	const onHandContent = (data) => {
+		setContent(data);
+		console.log('content==' + data);
+	};
 
-	// props.onHandContent(content);
+	const getIndex = (index) => {
+		setIndex(index);
+	};
+
 	return (
-
-		<form onSubmit={submitHandler}>
-			<div className="row">
-				<div className='col-4'>
+		<div className='row'>
+			{location && <div>{'data' + location.state}</div>}
+			<div className='col-4'>
+				<form onSubmit={submitHandler} ref={formRef}>
 					<div className={classes.control}>
-						<label htmlFor="title">Title</label>
-						<input type="text" id="title" ref={titleRef} />
+						<label htmlFor='title'>Title</label>
+						<input type='text' id='title' ref={titleRef} />
 					</div>
 					<div className={classes.control}>
-						<label htmlFor="author">Author</label>
-						<input type="text" id="author" ref={ownerRef} />
+						<label htmlFor='author'>Author</label>
+						<input type='text' id='author' ref={ownerRef} />
 					</div>
 					<div>
 						<Dropdown
 							className={classes.control}
-							label="Kind of book"
+							label='Kind of book'
 							options={typeOfBook}
 							value={kindOfBook}
-							onChange={onHandlerKindOfBook}
-						></Dropdown>
+							onChange={onHandlerKindOfBook}></Dropdown>
 					</div>
 					<div className={classes.control}>
-						<label htmlFor="coverImage">
+						<label htmlFor='coverImage'>
 							<b>Cover image</b>
 						</label>
-						<input type="file" id="coverImage" className="input-l" ref={imageRef} />
+						<input
+							type='file'
+							id='coverImage'
+							className='input-l'
+							ref={imageRef}
+						/>
 						<hr />
 						<h4>Uploading done {progress}%</h4>
 					</div>
 					<div className={classes.control}>
-						<label htmlFor="mountChapter">Mount chapter</label>
-						<input type="text" id="mountChapter" ref={mountChapterRef} />
+						<label htmlFor='mountChapter'>Mount chapter</label>
+						<input type='text' id='mountChapter' ref={mountChapterRef} />
+					</div>
+					<div className={classes.control}>
+						<label htmlFor='description'>Description</label>
+						<textarea
+							rows='3'
+							cols='3'
+							type='text'
+							id='description'
+							className={classes.description}
+							ref={descriptionRef}></textarea>
 					</div>
 					<div>
 						<Dropdown
 							className={classes.control}
-							label="Status"
+							label='Status'
 							options={statuses}
 							value={valueStatus}
-							onChange={onHandlerStatus}
-						></Dropdown>
+							onChange={onHandlerStatus}></Dropdown>
 					</div>
-					<button className="w-100 text-center mt-3">Add Comic</button>
-				</div>
-
-				<div className='col-3'>
-					<DragAndDrog
-						onHandlerPopUp={onHandlerPopUp}
-						addFormHandler={props.addFormHandler}
-						onHandContent={props.onHandContent}
-					></DragAndDrog>
-				</div>
-				<div className='col-5'>
-					{isPopup && <Form
-						content={props.content}
-						index={props.index}
-						onListData={props.onListData}
-					></Form>}
-				</div>
+					<button className='w-100 text-center mt-3'>Add Comic</button>
+				</form>
 			</div>
-		</form >
-
-
+			<div className='col-4'>
+				<DragAndDrog
+					onHandlerPopUp={onHandlerPopUp}
+					getIndex={getIndex}
+					onHandContent={onHandContent}></DragAndDrog>
+			</div>
+			<div className='col-4'>
+				{isPopup && (
+					<Form
+						onHandlerPopUp={onHandlerPopUp}
+						content={content}
+						index={index}
+						onListData={props.onListData}></Form>
+				)}
+			</div>
+		</div>
 	);
 }
 

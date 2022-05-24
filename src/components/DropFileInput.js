@@ -39,21 +39,23 @@ const DropFileInput = (props) => {
 	};
 
 	const fileRemove = (file) => {
-		props.addFormHandler(false);
+		props.onHandlerPopUp(false);
 		const updatedList = [...fileList];
 		updatedList.splice(fileList.indexOf(file), 1);
 		setFileList(updatedList);
-		setListChapters(updatedList)
+		setListChapters(updatedList);
 		props.onFileChange(updatedList);
 		props.onHandlerPopUp(false);
 	};
 
 	const handlePopUpForm = (e) => {
 		const index = +e.currentTarget.dataset.index + 1;
-		props.onHandlerPopUp(false, index);
+
+		props.onHandlerPopUp(false);
 		setTimeout(() => {
-			props.onHandlerPopUp(true, index);
-		}, 500)
+			props.onHandlerPopUp(true);
+			props.getIndex(index);
+		}, 500);
 	};
 	//will log the index of the clicked item
 	return (
@@ -74,14 +76,15 @@ const DropFileInput = (props) => {
 				<div className='drop-file-preview'>
 					<p className='drop-file-preview__title'>Ready to upload</p>
 					{fileList.map((item, index) => (
-						<div className='drop-file-preview__item' key={index} >
+						<div className='drop-file-preview__item' key={index}>
 							<div
 								data-index={index}
 								className='drop-file-display'
 								onClick={handlePopUpForm}>
 								<img
 									src={
-										ImageConfig[item.type.split('/')[1]] || ImageConfig['default']
+										ImageConfig[item.type.split('/')[1]] ||
+										ImageConfig['default']
 									}
 									alt=''
 								/>
