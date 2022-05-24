@@ -40,6 +40,7 @@ const Dashboard = (props) => {
             <th>#</th>
             <th>Tên người dùng</th>
             <th>Email</th>
+            <th>Ngày tạo</th>
           </tr>
         </thead>
         <tbody>
@@ -50,6 +51,7 @@ const Dashboard = (props) => {
                 <td>{++idx}</td>
                 <td>{data.userName}</td>
                 <td>{data.email}</td>
+                <td>{data.dateCreate}</td>
               </tr>
             );
           })}
