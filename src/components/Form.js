@@ -69,12 +69,12 @@ const Form = (props) => {
 		<div style={{ width: '100%' }}>
 			<form className='border-ar' onSubmit={submitHandler}>
 				<div className={classes.control}>
-					<label htmlFor='title'>Title chapter</label>
+					<label htmlFor='title'>Tên chương</label>
 					<input type='text' id='title' ref={titleChapterRef} />
 				</div>
 				<div className={classes.control}>
 					<label htmlFor='audio'>
-						<b>Audio</b>
+						<b>Thêm Audio</b>
 					</label>
 					<input
 						type='file'
@@ -85,10 +85,10 @@ const Form = (props) => {
 						}}
 					/>
 					<hr />
-					<h4>Uploading done {progress}%</h4>
+					<h4>Tải lên {progress}%</h4>
 				</div>
 				<button className='w-100 text-center mt-3'>
-					Add info about chapter
+					Thêm chương
 				</button>
 			</form>
 		</div>

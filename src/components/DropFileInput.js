@@ -68,13 +68,13 @@ const DropFileInput = (props) => {
 				onDrop={onDrop}>
 				<div className='drop-file-input__label'>
 					<img src={uploadImg} alt='' />
-					<p>Drag & Drop your files here</p>
+					<p>Thêm file vào đây</p>
 				</div>
 				<input type='file' value='' onChange={onFileDrop} />
 			</div>
 			{fileList.length > 0 ? (
 				<div className='drop-file-preview'>
-					<p className='drop-file-preview__title'>Ready to upload</p>
+					<p className='drop-file-preview__title'>Sẵn sàng thêm</p>
 					{fileList.map((item, index) => (
 						<div className='drop-file-preview__item' key={index}>
 							<div
