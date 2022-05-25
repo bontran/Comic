@@ -28,10 +28,12 @@ const Form = (props) => {
 		if (!fileAudio) return;
 		const storageRefAudio = ref(storage, `files/${fileAudio.name}`);
 		const uploadAudioTask = uploadBytesResumable(storageRefAudio, fileAudio);
+		const id = props.count > 0 ? +props.count + props.index : props.index;
+		console.log(id);
 		const chapterOfBook = {
-			idChapter: 'idChapter' + props.index,
+			idChapter: 'idChapter' + id,
 			chapterName: titleChapterRef.current.value,
-			numberOfChapter: props.index,
+			numberOfChapter: id,
 			contentText: props.content,
 		};
 		await uploadAudioTask.on(
@@ -55,6 +57,7 @@ const Form = (props) => {
 					console.log(chapterOfBook);
 					props.onHandlerPopUp(false);
 					props.onListData(chapterOfBook);
+					props.onHandlerFormData(chapterOfBook);
 					console.log('form content===' + chapterOfBook);
 				});
 			}

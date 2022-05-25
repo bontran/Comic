@@ -5,13 +5,29 @@ import { database, ref, get, child } from './fire';
 import { useNavigate } from 'react-router-dom';
 const MovieList = (props) => {
 	const dbRef = ref(database);
-	const history = useNavigate();
-	const edit = (id) => {
+	const navigate = useNavigate();
+	const editComic = (id) => {
+		var bindData;
 		get(child(dbRef, `allBooks/${id}`))
 			.then((snapshot) => {
 				if (snapshot.exists()) {
-					console.log(snapshot.val());
-					history('/add-comic', { state: snapshot.val() });
+					const bookData = snapshot.val();
+					console.log(bookData);
+					bindData = { ...bookData };
+				} else {
+					console.log('No data available');
+				}
+			})
+			.catch((error) => {
+				console.error(error);
+			});
+		get(child(dbRef, `ChapterOfBook/${id}`))
+			.then((snapshot) => {
+				if (snapshot.exists()) {
+					const chapter = snapshot.val();
+					const data = { ...bindData, chapter };
+					navigate('/add-comic', { state: data });
+					console.log(data);
 				} else {
 					console.log('No data available');
 				}
@@ -28,7 +44,7 @@ const MovieList = (props) => {
 						className='col-4'
 						key={index}
 						style={{ marginBottom: '20px' }}
-						onClick={() => edit(movie.id)}>
+						onClick={() => editComic(movie.id)}>
 						<Comic
 							key={movie.id}
 							name={movie.name}
