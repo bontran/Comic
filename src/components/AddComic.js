@@ -53,8 +53,7 @@ function AddComic(props) {
 			setKindOfBook(location.state.kindOfBook);
 			setValueStatus(location.state.status);
 			descriptionRef.current.value = location.state.description + '';
-			//amountOfVisitRef.current.value = +location.state.amountOfVisit;
-
+			amountOfVisitRef.current.value = +location.state.amountOfVisit;
 			setCount(Object.keys(location.state.chapter).length);
 		}
 	}, []);
