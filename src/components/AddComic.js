@@ -98,7 +98,7 @@ function AddComic(props) {
 							.then(() => alert('Data was update successfully'))
 							.catch((error) => alert('There was an error: ' + error));
 					} else {
-						//props.addComicHandler(comic);
+						props.addComicHandler(comic);
 					}
 				});
 			}
