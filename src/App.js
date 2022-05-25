@@ -46,7 +46,7 @@ const App = () => {
 				}
 			);
 			const data = await response.json();
-			console.log(listFormData);
+			console.log('list form data' + listFormData);
 			listFormData.forEach((value) => {
 				const chapterOfBook = {
 					chapterName: value.chapterName,
@@ -94,7 +94,6 @@ const App = () => {
 						element={
 							<AddComic
 								onListData={onListData}
-								listFormData={listFormData}
 								addComicHandler={addComicHandler}
 							/>
 						}

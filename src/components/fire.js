@@ -9,6 +9,7 @@ import {
 	onValue,
 	get,
 	child,
+	update,
 } from 'firebase/database';
 
 const firebaseConfig = {
@@ -27,4 +28,4 @@ const app = firebase.initializeApp(firebaseConfig);
 export const storage = getStorage(app);
 export const auth = app.auth();
 export const database = getDatabase(app);
-export { app, ref, set, push, onValue, get, child };
+export { app, ref, set, push, onValue, get, child, update };

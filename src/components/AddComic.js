@@ -3,8 +3,8 @@ import DragAndDrog from './DragAnDrop';
 import classes from './AddComic.module.css';
 import { Button } from 'react-bootstrap';
 import { v4 as uuidv4 } from 'uuid';
-import { ref, getDownloadURL, uploadBytesResumable } from 'firebase/storage';
-import { storage } from './fire';
+import { getDownloadURL, uploadBytesResumable } from 'firebase/storage';
+import { storage, update, database, ref, child, get, set, push } from './fire';
 import Dropdown from './Dropdown';
 import Form from './Form';
 import { useLocation } from 'react-router-dom';
@@ -19,18 +19,22 @@ function AddComic(props) {
 	const [kindOfBook, setKindOfBook] = useState('');
 	const descriptionRef = useRef('');
 	const imageRef = useRef('');
+	const [listFormData, setListFormData] = useState([]);
 	const [isPopup, setIsPopup] = useState(false);
 	const formRef = useRef();
 	const [content, setContent] = useState('');
 	let myuuid = uuidv4();
 	const [index, setIndex] = useState(0);
 	const location = useLocation();
+	const [count, setCount] = useState(0);
 	const statuses = [
 		{ label: 'Unknown', value: 'null' },
 		{ label: 'Done', value: 'done' },
 		{ label: 'Undone', value: 'undone' },
 	];
-
+	const db = database;
+	let comic;
+	let updateComic;
 	const typeOfBook = [
 		{ label: 'Choose type of book', value: 'null' },
 		{ label: 'Horor', value: 'horor' },
@@ -47,6 +51,8 @@ function AddComic(props) {
 			setValueStatus(location.state.status);
 			descriptionRef.current.value = location.state.description + '';
 			//amountOfVisitRef.current.value = +location.state.amountOfVisit;
+
+			setCount(Object.keys(location.state.chapter).length);
 		}
 	}, []);
 
@@ -65,16 +71,7 @@ function AddComic(props) {
 		if (!fileImage) return;
 		const sotrageRef = ref(storage, `files/${fileImage.name}`);
 		const uploadTask = uploadBytesResumable(sotrageRef, fileImage);
-		const comic = {
-			name: titleRef.current.value,
-			mountChapter: mountChapterRef.current.value,
-			kindOfBook: kindOfBook,
-			idBook: myuuid,
-			amountOfVisit: amountOfVisitRef.current.value,
-			author: ownerRef.current.value,
-			status: valueStatus,
-			description: descriptionRef.current.value,
-		};
+
 		await uploadTask.on(
 			'state_changed',
 			(snapshot) => {
@@ -93,15 +90,77 @@ function AddComic(props) {
 					if (stringHepler(downloadURL).includes('jpg')) {
 						comic.coverImage = downloadURL;
 					}
-					console.log(comic);
-					props.addComicHandler(comic);
+					if (count > 0) {
+						console.log('UPDATE');
+						update(ref(db, 'allBooks/' + location.state.idBook), updateComic)
+							.then(() => alert('Data was update successfully'))
+							.catch((error) => alert('There was an error: ' + error));
+					} else {
+						//props.addComicHandler(comic);
+					}
 				});
 			}
 		);
 	};
 
+	const onHandlerFormData = (data) => {
+		setListFormData((prevList) => {
+			return [...prevList, data];
+		});
+	};
+
 	function submitHandler(e) {
 		e.preventDefault();
+		comic = {
+			name: titleRef.current.value,
+			mountChapter: mountChapterRef.current.value,
+			kindOfBook: kindOfBook,
+			idBook: myuuid,
+			author: ownerRef.current.value,
+			status: valueStatus,
+			description: descriptionRef.current.value,
+			amountOfVisit: 0,
+		};
+		updateComic = {
+			name: titleRef.current.value,
+			mountChapter: mountChapterRef.current.value,
+			kindOfBook: kindOfBook,
+			idBook: location.state.idBook,
+			author: ownerRef.current.value,
+			status: valueStatus,
+			description: descriptionRef.current.value,
+			amountOfVisit: 0,
+		};
+		console.log(updateComic.idBook);
+		if (count > 0) {
+			console.log('UPDATE=' + location.state.idBook + updateComic);
+			update(ref(db, 'allBooks/' + location.state.idBook), updateComic)
+				.then(() => alert('Data was update successfully'))
+				.catch((error) => alert('There was an error: ' + error));
+
+			if (listFormData.length !== 0) {
+				listFormData.forEach((value) => {
+					const chapterOfBook = {
+						chapterName: value.chapterName,
+						idChapter: value.idChapter,
+						numberOfChapter: value.numberOfChapter,
+					};
+					console.log(updateComic.idBook);
+					push(ref(db, 'ChapterOfBook/' + updateComic.idBook), chapterOfBook);
+					console.log(value.contentAudio);
+					const contentOfBook = {
+						contentAudio: value.contentAudio,
+						numberOfChapter: value.numberOfChapter,
+						contentText: value.contentText,
+					};
+					console.log(contentOfBook);
+					set(
+						ref(db, `ContentOfBook/${updateComic.idBook}/${value.idChapter}`),
+						contentOfBook
+					);
+				});
+			}
+		}
 		formHandler(e);
 		resetForm();
 	}
@@ -192,6 +251,7 @@ function AddComic(props) {
 			</div>
 			<div className='col-4'>
 				<DragAndDrog
+					count={count}
 					onHandlerPopUp={onHandlerPopUp}
 					getIndex={getIndex}
 					onHandContent={onHandContent}></DragAndDrog>
@@ -199,9 +259,11 @@ function AddComic(props) {
 			<div className='col-4'>
 				{isPopup && (
 					<Form
+						count={count}
 						onHandlerPopUp={onHandlerPopUp}
 						content={content}
 						index={index}
+						onHandlerFormData={onHandlerFormData}
 						onListData={props.onListData}></Form>
 				)}
 			</div>
