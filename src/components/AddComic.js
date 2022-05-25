@@ -4,7 +4,7 @@ import classes from './AddComic.module.css';
 import { Button } from 'react-bootstrap';
 import { v4 as uuidv4 } from 'uuid';
 import { ref, getDownloadURL, uploadBytesResumable } from 'firebase/storage';
-import { storage, update, database, child, get, set, push } from './fire';
+import { refe, storage, update, database, child, get, set, push } from './fire';
 import Dropdown from './Dropdown';
 import Form from './Form';
 import { useLocation } from 'react-router-dom';
@@ -13,7 +13,7 @@ function AddComic(props) {
 	const titleRef = useRef('');
 	const ownerRef = useRef('');
 	const mountChapterRef = useRef('');
-	const amountOfVisitRef = useRef(0);
+	const [amountOfVisit, setAmountOfVisit] = useState(0);
 	const [progress, setProgress] = useState(0);
 	const [valueStatus, setValueStatus] = useState('');
 	const [kindOfBook, setKindOfBook] = useState('');
@@ -49,11 +49,11 @@ function AddComic(props) {
 		if (location.state != null) {
 			titleRef.current.value = location.state.name;
 			ownerRef.current.value = location.state.author;
-			mountChapterRef.current.value = location.state.mountChapter;
+			mountChapterRef.current.value = +location.state.mountChapter;
 			setKindOfBook(location.state.kindOfBook);
 			setValueStatus(location.state.status);
 			descriptionRef.current.value = location.state.description + '';
-			amountOfVisitRef.current.value = +location.state.amountOfVisit;
+			setAmountOfVisit(+location.state.amountOfVisit);
 			setCount(Object.keys(location.state.chapter).length);
 		}
 	}, []);
@@ -93,7 +93,7 @@ function AddComic(props) {
 					}
 					if (count > 0) {
 						console.log('UPDATE');
-						update(ref(db, 'allBooks/' + location.state.idBook), updateComic)
+						update(refe(db, 'allBooks/' + location.state.idBook), updateComic)
 							.then(() => alert('Data was update successfully'))
 							.catch((error) => alert('There was an error: ' + error));
 					} else {
@@ -115,28 +115,28 @@ function AddComic(props) {
 		e.preventDefault();
 		comic = {
 			name: titleRef.current.value,
-			mountChapter: mountChapterRef.current.value,
+			mountChapter: +mountChapterRef.current.value,
 			kindOfBook: kindOfBook,
 			idBook: myuuid,
 			author: ownerRef.current.value,
 			status: valueStatus,
 			description: descriptionRef.current.value,
-			amountOfVisit: 0,
+			amountOfVisit: amountOfVisit,
 		};
 		console.log(count);
 		if (count > 0) {
 			updateComic = {
 				name: titleRef.current.value,
-				mountChapter: mountChapterRef.current.value,
+				mountChapter: +mountChapterRef.current.value,
 				kindOfBook: kindOfBook,
 				idBook: location.state.idBook,
 				author: ownerRef.current.value,
 				status: valueStatus,
 				description: descriptionRef.current.value,
-				amountOfVisit: 0,
+				amountOfVisit: amountOfVisit,
 			};
 			console.log('UPDATE=' + location.state.idBook + updateComic);
-			update(ref(db, 'allBooks/' + location.state.idBook), updateComic)
+			update(refe(db, 'allBooks/' + location.state.idBook), updateComic)
 				.then(() => alert('Data was update successfully'))
 				.catch((error) => alert('There was an error: ' + error));
 
@@ -148,7 +148,7 @@ function AddComic(props) {
 						numberOfChapter: value.numberOfChapter,
 					};
 					console.log(updateComic.idBook);
-					push(ref(db, 'ChapterOfBook/' + updateComic.idBook), chapterOfBook);
+					push(refe(db, 'ChapterOfBook/' + updateComic.idBook), chapterOfBook);
 					console.log(value.contentAudio);
 					const contentOfBook = {
 						contentAudio: value.contentAudio,
@@ -157,7 +157,7 @@ function AddComic(props) {
 					};
 					console.log(contentOfBook);
 					set(
-						ref(db, `ContentOfBook/${updateComic.idBook}/${value.idChapter}`),
+						refe(db, `ContentOfBook/${updateComic.idBook}/${value.idChapter}`),
 						contentOfBook
 					);
 				});
