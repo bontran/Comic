@@ -25,18 +25,18 @@ const Nav = (props) => {
 			{currentUser && currentUser.email && (
 				<div className='container-fluid'>
 					<Link className='navbar-brand' to='/'>
-						Comic
+						EbookReader
 					</Link>
 					<div className='collapse navbar-collapse' id='navbarSupportedContent'>
 						<ul className='navbar-nav me-auto mb-2 mb-lg-0'>
 							<li className='nav-item'>
 								<Link className='nav-link active' to='/add-comic'>
-									Add Comic
+									Thêm Sách
 								</Link>
 							</li>
 							<li className='nav-item'>
 								<Link className='nav-link active' to='/dashboard'>
-									Dashboard
+									Quản lý tài khoản
 								</Link>
 							</li>
 						</ul>
@@ -47,14 +47,14 @@ const Nav = (props) => {
 								placeholder='Search'
 								aria-label='Search'
 							/>
-							<Button className='btn btn-success'>Search</Button>
+							<Button className='btn btn-success'>Tìm</Button>
 
 							<Button className='btn btn-warning mx-3'>
 								{currentUser && currentUser.email}
 							</Button>
 							<div className='w-100 text-center mt-2'>
 								<a varient='link' onClick={handleLogout}>
-									Log Out
+									Đăng xuất
 								</a>
 							</div>
 						</form>

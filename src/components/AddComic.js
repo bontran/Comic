@@ -13,7 +13,7 @@ function AddComic(props) {
 	const titleRef = useRef('');
 	const ownerRef = useRef('');
 	const mountChapterRef = useRef('');
-	const amountOfVisitRef = useRef(12);
+	const amountOfVisitRef = useRef(0);
 	const [progress, setProgress] = useState(0);
 	const [valueStatus, setValueStatus] = useState('');
 	const [kindOfBook, setKindOfBook] = useState('');
@@ -28,18 +28,21 @@ function AddComic(props) {
 	const location = useLocation();
 	const [count, setCount] = useState(0);
 	const statuses = [
-		{ label: 'Unknown', value: 'null' },
-		{ label: 'Done', value: 'done' },
-		{ label: 'Undone', value: 'undone' },
+		{ label: 'Hoàn thành', value: 'Hoàn thành' },
+		{ label: 'Chưa hoàn thành', value: 'Chưa hoàn thành' },
 	];
 	const db = database;
 	let comic;
 	let updateComic;
 	const typeOfBook = [
-		{ label: 'Choose type of book', value: 'null' },
-		{ label: 'Horor', value: 'horor' },
-		{ label: 'Comedy', value: 'comedy' },
-		{ label: 'Action', value: 'action' },
+		{ label: 'Kiếm Hiệp', value: 'Kiếm Hiệp' },
+		{ label: 'Tình Cảm', value: 'Tình Cảm' },
+		{ label: 'Hành Động', value: 'Hành Động' },
+		{ label: 'Trinh Thám', value: 'Trinh thám' },
+		{ label: 'Pháp Thuật', value: 'Pháp Thuật' },
+		{ label: 'Cổ tích', value: 'Cổ tích' },
+		{ label: 'Tiểu Thuyết', value: 'Tiểu Thuyết' },
+		{ label: 'Truyện thơ', value: 'Truyện thơ' },
 	];
 
 	useEffect(() => {
@@ -71,7 +74,6 @@ function AddComic(props) {
 		if (!fileImage) return;
 		const sotrageRef = ref(storage, `files/${fileImage.name}`);
 		const uploadTask = uploadBytesResumable(sotrageRef, fileImage);
-
 		await uploadTask.on(
 			'state_changed',
 			(snapshot) => {
@@ -196,24 +198,24 @@ function AddComic(props) {
 			<div className='col-4'>
 				<form onSubmit={submitHandler} ref={formRef}>
 					<div className={classes.control}>
-						<label htmlFor='title'>Title</label>
+						<label htmlFor='title'>Tên sách</label>
 						<input type='text' id='title' ref={titleRef} />
 					</div>
 					<div className={classes.control}>
-						<label htmlFor='author'>Author</label>
+						<label htmlFor='author'>Tác giả</label>
 						<input type='text' id='author' ref={ownerRef} />
 					</div>
 					<div>
 						<Dropdown
 							className={classes.control}
-							label='Kind of book'
+							label='Thể loại'
 							options={typeOfBook}
 							value={kindOfBook}
 							onChange={onHandlerKindOfBook}></Dropdown>
 					</div>
 					<div className={classes.control}>
 						<label htmlFor='coverImage'>
-							<b>Cover image</b>
+							<b>Ảnh bìa</b>
 						</label>
 						<input
 							type='file'
@@ -222,14 +224,14 @@ function AddComic(props) {
 							ref={imageRef}
 						/>
 						<hr />
-						<h4>Uploading done {progress}%</h4>
+						<h6>Tải lên {progress}%</h6>
 					</div>
 					<div className={classes.control}>
-						<label htmlFor='mountChapter'>Mount chapter</label>
+						<label htmlFor='mountChapter'>Số chương</label>
 						<input type='text' id='mountChapter' ref={mountChapterRef} />
 					</div>
 					<div className={classes.control}>
-						<label htmlFor='description'>Description</label>
+						<label htmlFor='description'>Mô tả</label>
 						<textarea
 							rows='3'
 							cols='3'
@@ -241,12 +243,12 @@ function AddComic(props) {
 					<div>
 						<Dropdown
 							className={classes.control}
-							label='Status'
+							label='Trạng thái'
 							options={statuses}
 							value={valueStatus}
 							onChange={onHandlerStatus}></Dropdown>
 					</div>
-					<button className='w-100 text-center mt-3'>Add Comic</button>
+					<button className='w-100 text-center mt-3'>Thêm Sách</button>
 				</form>
 			</div>
 			<div className='col-4'>

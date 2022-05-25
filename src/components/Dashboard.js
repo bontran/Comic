@@ -1,41 +1,64 @@
-import React, { useState } from 'react';
-import { Card, Button, Alert } from 'react-bootstrap';
-import { useAuth } from './contexts/AuthContext';
-import { Link, useNavigate } from 'react-router-dom';
-
+import React, { useEffect, useState, useCallback } from "react";
+import { Table } from "react-bootstrap";
 const Dashboard = (props) => {
-	const [error, setError] = useState('');
-	const { currentUser, logout } = useAuth();
-	const history = useNavigate();
-	const handleLogout = async () => {
-		setError('');
-		try {
-			await logout();
-			history('/login');
-		} catch {
-			setError('Failed to logout');
-		}
-	};
-	return (
-		<React.Fragment>
-			<Card>
-				<Card.Body>
-					<h2 className='text-center mb-4'>Profile</h2>
-					{error && <Alert variant='danger'>{error}</Alert>}
-					<strong>Email: </strong>
-					{currentUser.email}
-					<Link to='/update-profile' className='btn btn-primary w-100 mt-3'>
-						Update profile
-					</Link>
-				</Card.Body>
-			</Card>
-			<div className='w-100 text-center mt-2'>
-				<a varient='link' onClick={handleLogout}>
-					Log Out
-				</a>
-			</div>
-		</React.Fragment>
-	);
+  const [listUser, setListUser] = useState([]);
+
+  const fetchUser = useCallback(async () => {
+    try {
+      const response = await fetch(
+        "https://ebookreader-5bd9b-default-rtdb.asia-southeast1.firebasedatabase.app/UserProfile.json"
+      );
+
+      if (!response.ok) {
+        throw new Error("Something went wrong!!");
+      }
+
+      const data = await response.json();
+
+      const loadUser = [];
+
+      for (const key in data) {
+        loadUser.push({
+          data: data[key],
+        });
+      }
+      setListUser(loadUser);
+      console.log(listUser);
+    } catch (err) {}
+  }, []);
+
+  useEffect(() => {
+    fetchUser();
+  }, [fetchUser]);
+
+  return (
+    <>
+      <h4 className="my-4">Danh sách người dùng</h4>
+      <Table>
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Tên người dùng</th>
+            <th>Email</th>
+            <th>Ngày tạo</th>
+          </tr>
+        </thead>
+        <tbody>
+          {listUser.map((user, idx) => {
+            const data = user.data;
+            return (
+              <tr>
+                <td>{++idx}</td>
+                <td>{data.userName}</td>
+                <td>{data.email}</td>
+                <td>{data.dateCreate}</td>
+              </tr>
+            );
+          })}
+        </tbody>
+      </Table>
+    </>
+  );
 };
 
 export default Dashboard;
