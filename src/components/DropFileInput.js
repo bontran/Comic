@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 
 import './drop-file-input.css';
@@ -15,6 +15,11 @@ const DropFileInput = (props) => {
 	const onDragLeave = () => wrapperRef.current.classList.remove('dragover');
 
 	const onDrop = () => wrapperRef.current.classList.remove('dragover');
+
+	useEffect(() => {
+		setFileList([]);
+		setListChapters([]);
+	}, [props.listNull]);
 
 	const onFileDrop = async (e) => {
 		e.preventDefault();

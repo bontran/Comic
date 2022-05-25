@@ -18,6 +18,7 @@ const DragAndDrog = (props) => {
 		<div className='box'>
 			<h6 className='header'>Thêm chương</h6>
 			<DropFileInput
+				listNull={props.listNull}
 				count={props.count}
 				getIndex={onGetIndex}
 				onContentChange={onContentChange}

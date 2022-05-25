@@ -36,6 +36,7 @@ function AddComic(props) {
 	const [index, setIndex] = useState(0);
 	const location = useLocation();
 	const [count, setCount] = useState(0);
+	const [listNull, setListNull] = useState(null);
 	const statuses = [
 		{ label: 'Hoàn thành', value: 'Hoàn thành' },
 		{ label: 'Chưa hoàn thành', value: 'Chưa hoàn thành' },
@@ -185,6 +186,8 @@ function AddComic(props) {
 		formRef.current.reset();
 		setKindOfBook('');
 		setValueStatus('');
+		setListNull('remove');
+		alert('Thêm sách thành công!!');
 	};
 
 	const onHandlerStatus = (event) => {
@@ -267,6 +270,7 @@ function AddComic(props) {
 			</div>
 			<div className='col-4'>
 				<DragAndDrog
+					listNull={listNull}
 					count={count}
 					onHandlerPopUp={onHandlerPopUp}
 					getIndex={getIndex}
