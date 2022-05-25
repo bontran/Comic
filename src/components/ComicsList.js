@@ -15,8 +15,6 @@ const MovieList = (props) => {
 					const bookData = snapshot.val();
 					console.log(bookData);
 					bindData = { ...bookData };
-				} else {
-					console.log('No data available');
 				}
 			})
 			.catch((error) => {
@@ -30,7 +28,7 @@ const MovieList = (props) => {
 					navigate('/add-comic', { state: data });
 					console.log(data);
 				} else {
-					console.log('No data available');
+					navigate('/add-comic', { state: bindData });
 				}
 			})
 			.catch((error) => {

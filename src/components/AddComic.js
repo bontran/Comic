@@ -4,7 +4,16 @@ import classes from './AddComic.module.css';
 import { Button } from 'react-bootstrap';
 import { v4 as uuidv4 } from 'uuid';
 import { ref, getDownloadURL, uploadBytesResumable } from 'firebase/storage';
-import { refe, storage, update, database, child, get, set, push } from './fire';
+import {
+	ref as reff,
+	update,
+	database,
+	child,
+	get,
+	set,
+	push,
+	storage,
+} from './fire';
 import Dropdown from './Dropdown';
 import Form from './Form';
 import { useLocation } from 'react-router-dom';
@@ -54,7 +63,11 @@ function AddComic(props) {
 			setValueStatus(location.state.status);
 			descriptionRef.current.value = location.state.description + '';
 			setAmountOfVisit(+location.state.amountOfVisit);
-			setCount(Object.keys(location.state.chapter).length);
+			if (location.state.chapter != null) {
+				setCount(Object.keys(location.state.chapter).length);
+			} else {
+				setCount(0);
+			}
 		}
 	}, []);
 
@@ -93,7 +106,7 @@ function AddComic(props) {
 					}
 					if (count > 0) {
 						console.log('UPDATE');
-						update(refe(db, 'allBooks/' + location.state.idBook), updateComic)
+						update(reff(db, 'allBooks/' + location.state.idBook), updateComic)
 							.then(() => alert('Data was update successfully'))
 							.catch((error) => alert('There was an error: ' + error));
 					} else {
@@ -136,7 +149,7 @@ function AddComic(props) {
 				amountOfVisit: amountOfVisit,
 			};
 			console.log('UPDATE=' + location.state.idBook + updateComic);
-			update(refe(db, 'allBooks/' + location.state.idBook), updateComic)
+			update(reff(db, 'allBooks/' + location.state.idBook), updateComic)
 				.then(() => alert('Data was update successfully'))
 				.catch((error) => alert('There was an error: ' + error));
 
@@ -148,7 +161,7 @@ function AddComic(props) {
 						numberOfChapter: value.numberOfChapter,
 					};
 					console.log(updateComic.idBook);
-					push(refe(db, 'ChapterOfBook/' + updateComic.idBook), chapterOfBook);
+					push(reff(db, 'ChapterOfBook/' + updateComic.idBook), chapterOfBook);
 					console.log(value.contentAudio);
 					const contentOfBook = {
 						contentAudio: value.contentAudio,
@@ -157,7 +170,7 @@ function AddComic(props) {
 					};
 					console.log(contentOfBook);
 					set(
-						refe(db, `ContentOfBook/${updateComic.idBook}/${value.idChapter}`),
+						reff(db, `ContentOfBook/${updateComic.idBook}/${value.idChapter}`),
 						contentOfBook
 					);
 				});
