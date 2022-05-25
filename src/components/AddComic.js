@@ -3,8 +3,8 @@ import DragAndDrog from './DragAnDrop';
 import classes from './AddComic.module.css';
 import { Button } from 'react-bootstrap';
 import { v4 as uuidv4 } from 'uuid';
-import { getDownloadURL, uploadBytesResumable } from 'firebase/storage';
-import { storage, update, database, ref, child, get, set, push } from './fire';
+import { ref, getDownloadURL, uploadBytesResumable } from 'firebase/storage';
+import { storage, update, database, child, get, set, push } from './fire';
 import Dropdown from './Dropdown';
 import Form from './Form';
 import { useLocation } from 'react-router-dom';
@@ -98,6 +98,7 @@ function AddComic(props) {
 							.then(() => alert('Data was update successfully'))
 							.catch((error) => alert('There was an error: ' + error));
 					} else {
+						console.log('run');
 						props.addComicHandler(comic);
 					}
 				});
@@ -123,18 +124,18 @@ function AddComic(props) {
 			description: descriptionRef.current.value,
 			amountOfVisit: 0,
 		};
-		updateComic = {
-			name: titleRef.current.value,
-			mountChapter: mountChapterRef.current.value,
-			kindOfBook: kindOfBook,
-			idBook: location.state.idBook,
-			author: ownerRef.current.value,
-			status: valueStatus,
-			description: descriptionRef.current.value,
-			amountOfVisit: 0,
-		};
-		console.log(updateComic.idBook);
+		console.log(count);
 		if (count > 0) {
+			updateComic = {
+				name: titleRef.current.value,
+				mountChapter: mountChapterRef.current.value,
+				kindOfBook: kindOfBook,
+				idBook: location.state.idBook,
+				author: ownerRef.current.value,
+				status: valueStatus,
+				description: descriptionRef.current.value,
+				amountOfVisit: 0,
+			};
 			console.log('UPDATE=' + location.state.idBook + updateComic);
 			update(ref(db, 'allBooks/' + location.state.idBook), updateComic)
 				.then(() => alert('Data was update successfully'))

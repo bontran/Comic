@@ -8,6 +8,7 @@ const MovieList = (props) => {
 	const navigate = useNavigate();
 	const editComic = (id) => {
 		var bindData;
+		console.log(id);
 		get(child(dbRef, `allBooks/${id}`))
 			.then((snapshot) => {
 				if (snapshot.exists()) {
@@ -48,7 +49,7 @@ const MovieList = (props) => {
 						<Comic
 							key={movie.id}
 							name={movie.name}
-							owner={movie.owner}
+							author={movie.owner}
 							coverImage={movie.coverImage}
 							description={movie.description}
 							kindOfBook={movie.kindOfBook}

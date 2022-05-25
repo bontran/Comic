@@ -35,18 +35,17 @@ const App = () => {
 
 	const addComicHandler = async (comic) => {
 		try {
-			const response = await fetch(
-				'https://ebookreader-5bd9b-default-rtdb.asia-southeast1.firebasedatabase.app/allBooks.json',
-				{
-					method: 'POST',
-					body: JSON.stringify(comic),
-					header: {
-						'Content-Type': 'application/json',
-					},
-				}
-			);
-			const data = await response.json();
-			console.log('list form data' + listFormData);
+			// const response = await fetch(
+			// 	'https://ebookreader-5bd9b-default-rtdb.asia-southeast1.firebasedatabase.app/allBooks.json',
+			// 	{
+			// 		method: 'POST',
+			// 		body: JSON.stringify(comic),
+			// 		header: {
+			// 			'Content-Type': 'application/json',
+			// 		},
+			// 	}
+			// );
+			set(ref(db, 'allBooks/' + comic.idBook), comic);
 			listFormData.forEach((value) => {
 				const chapterOfBook = {
 					chapterName: value.chapterName,
