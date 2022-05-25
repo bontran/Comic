@@ -25,10 +25,20 @@ const MovieList = (props) => {
 				if (snapshot.exists()) {
 					const chapter = snapshot.val();
 					const data = { ...bindData, chapter };
-					navigate('/add-comic', { state: data });
+					navigate('/add-comic', {
+						state: {
+							...data,
+							action: 'update',
+						},
+					});
 					console.log(data);
 				} else {
-					navigate('/add-comic', { state: bindData });
+					navigate('/add-comic', {
+						state: {
+							...bindData,
+							action: 'update',
+						},
+					});
 				}
 			})
 			.catch((error) => {

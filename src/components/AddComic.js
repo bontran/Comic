@@ -136,8 +136,7 @@ function AddComic(props) {
 			description: descriptionRef.current.value,
 			amountOfVisit: amountOfVisit,
 		};
-		console.log(count);
-		if (count > 0) {
+		if (count > 0 || location.state.action === 'update') {
 			updateComic = {
 				name: titleRef.current.value,
 				mountChapter: +mountChapterRef.current.value,
